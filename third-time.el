@@ -264,13 +264,22 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 
 ;;; Global Minor Mode
 
+(defun third-time-modeline ()
+  "Format modeline entry for `third-time-mode'."
+  (format " ⅓⏲[%s]"
+          (cdr (assoc third-time-state
+                      '((:working . "WRK")
+                        (:break . "BRK")
+                        (:long-break . "LNG")
+                        (nil . "OFF"))))))
+
 (defvar third-time-mode-map (make-keymap)
   "Keymap for `third-time-mode'.")
 
 (define-minor-mode third-time-mode
   "Basic support for Third Time productivity."
   :global t
-  :lighter " ⅓⏲"
+  :lighter (:eval (third-time-modeline))
   :keymap third-time-mode-map
   :variable third-time-state
   (if (not third-time-state)
