@@ -170,6 +170,21 @@ This is stored as the result of `current-time'.")
         third-time-log-buffer nil)
   (third-time-cancel-nagger))
 
+(defun third-time-calculate-time-elapsed ()
+  "Determine how much time has elapsed since `third-time-change-time'."
+  (- (time-convert nil 'integer)
+     (time-convert third-time-change-time 'integer)))
+
+(defun third-time-calculate-remaining-break-time ()
+  "Figure out how much break time is remaining."
+  (let ((break-time-elapsed (third-time-calculate-time-elapsed)))
+    (max 0 (- third-time-break-available break-time-elapsed))))
+
+(defun third-time-calculate-additional-break-time ()
+  "How much break time should be added."
+  (let ((work-time-elapsed (third-time-calculate-time-elapsed)))
+    (round work-time-elapsed third-time-fraction)))
+
 
 ;;; Alerting and Nagging
 
