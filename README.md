@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2023 Samuel W. Flint <swflint@flintfam.org>
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 <!-- [![MELPA](https://melpa.org/packages/time-block-badge.svg)](https://melpa.org/#/third-time) -->
 [![REUSE status](https://api.reuse.software/badge/git.sr.ht/~swflint/third-time)](https://api.reuse.software/info/git.sr.ht/~swflint/third-time)
 
