@@ -140,6 +140,9 @@ nil -> :working
 (defvar third-time-just-worked 0
   "Time worked in the most recent work session as number of seconds.")
 
+(defvar third-time-break-timer nil
+  "Timer for breaks.")
+
 (defvar third-time-break-available 0
   "How many seconds of break are available.")
 
@@ -195,6 +198,20 @@ nil -> :working
           (eq third-time-state :long-break))
       (third-time-alert "Your break has finished.  Time to return to work.")
     (third-time-cancel-nagger)))
+
+
+;;; Break timers
+(defun third-time-start-break-timer (secs message)
+  "Start a break timer for SECS, showing MESSAGE after break."
+  (when (timerp third-time-break-timer)
+    (cancel-timer third-time-break-timer)
+    (setf third-time-break-timer nil))
+  (setf third-time-break-timer (run-with-timer secs nil #'third-time-break-function message)))
+
+(defun third-time-break-function (message)
+  "Show MESSAGE that break is done and start nagger."
+  (third-time-alert message)
+  (third-time-start-nagger))
 
 
 ;;; Logging support
