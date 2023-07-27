@@ -31,6 +31,95 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
+
+;;; Customization
+
+(defgroup third-time nil
+  "Customize behavior of Third Time for Emacs."
+  :group 'convenience
+  :prefix "third-time-"
+  :link '(url-link :tag "Sourcehut" "https://git.sr.ht/~swflint/third-time")
+  :link '(emacs-library-link :tag "Library Source" "third-time.el"))
+
+(defcustom third-time-fraction 3
+  "What proportion of time should be used for breaks.
+
+This is interpreted as 1 / `third-time-fraction', thus it should
+be a positive integer."
+  :group 'third-time
+  :type 'natnum)
+
+(defcustom third-time-working-hook nil
+  "Hook to run when work begins."
+  :group 'third-time
+  :type 'hook)
+
+(defcustom third-time-break-hook nil
+  "Hook to run when a break begins."
+  :group 'third-time
+  :type 'hook)
+
+(defcustom third-time-long-break-hook nil
+  "Hook to run when a long break begins."
+  :group 'third-time
+  :type 'hook)
+
+(defcustom third-time-change-hook nil
+  "Functions to run on state change.
+
+This hook will be run after the more specific state change
+hooks (`third-time-working-hook', `third-time-break-hook',
+`third-time-long-break-hook' and `third-time-mode-hook')"
+  :group 'third-time
+  :type 'hook)
+
+(defcustom third-time-mode-hook nil
+  "Functions to run on enable/disable of `third-time-mode'."
+  :group 'third-time
+  :type 'hook)
+
+(defcustom third-time-log-file nil
+  "File to log third time data to."
+  :group 'third-time
+  :type '(choice (file :tag "Log to file")
+                 (const :tag "Don't log" nil)))
+
+(defcustom third-time-log-format "%T,%s"
+  "Log line format for `third-time-log-file'.
+
+The following format codes are available:
+
+ - %T formats time according to `third-time-log-time-format'
+ - %s state entered
+ - %h time worked (HH:MM)
+ - %b break remaining at state change (HH:MM)"
+  :group 'third-time
+  :type 'string)
+
+(defcustom third-time-log-time-format ""
+  "Logging time format.
+
+Formatted using `format-time-string'."
+  :group 'third-time
+  :type 'string)
+
+
+;;; Helper Functions
+
+
+
+;;; Logging support
+
+
+
+;;; Primary User Functions
+
+
+
+;;; Global Minor Mode
+
 
 (provide 'third-time)
 
