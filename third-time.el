@@ -39,7 +39,6 @@
 ;;
 ;;;; Usage
 ;;
-;;
 ;; It is recommended that you bind `third-time-start-work' to `C-x M-t
 ;; w' (or `third-time-prefix w', see below for information about the
 ;; prefix).
@@ -97,6 +96,11 @@
 ;; periodically remind the user that a break has been completed.  It
 ;; is controlled with the `third-time-nag-time' which is a number of
 ;; minutes, if it is 0, no nagging will take place.
+;;
+;;;; Bug Reports and Patches
+;;
+;; If you find a bug or wish to submit a patch, send an email to
+;; ~swflint/public-inbox@lists.sr.ht.
 
 ;;; Code:
 
