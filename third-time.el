@@ -280,7 +280,23 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                         (:long-break . "LNG")
                         (nil . "OFF"))))))
 
-(defvar third-time-mode-map (make-keymap)
+(defvar third-time-prefix "C-x C-S-t"
+  "Prefix for `third-time-mode' bindings.
+
+Note, must be set *before* third-time is loaded.")
+
+(defvar third-time-mode-map
+  (let ((keymap (make-keymap)))
+    (mapc (lambda (binding)
+            (cl-destructuring-bind (key . cmd) binding
+              (define-key keymap (kbd (format "%s %s" third-time-prefix key)) cmd)))
+          '(("w" . third-time-start-work)
+            ("b" . third-time-start-break)
+            ("l" . third-time-start-long-break)
+            ("m" . third-time-start-long-break)
+            ("e" . third-time-end-session)
+            ("s" . third-time-stop-session)))
+    keymap)
   "Keymap for `third-time-mode'.")
 
 (define-minor-mode third-time-mode
