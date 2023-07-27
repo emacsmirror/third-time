@@ -392,7 +392,7 @@ Note, must be set *before* third-time is loaded.")
             ("l" . third-time-start-long-break)
             ("m" . third-time-start-long-break)
             ("e" . third-time-end-session)
-            ("s" . third-time-stop-session)))
+            ("s" . third-time-end-session)))
     keymap)
   "Keymap for `third-time-mode'.")
 
