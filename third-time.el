@@ -204,6 +204,16 @@ If INITIAL-INPUT is passed, it will be used."
             minutes (string-to-number (match-string 2 read-in-string))))
     (+ (* hours 60 60) (* minutes 60))))
 
+(defun third-time-seconds-to-hh-mm (seconds &optional force-hours)
+  "Format SECONDS as [HH:]mm time.
+
+Time will be formatted as HH:MM if FORCE-HOURS is non-nil."
+  (let* ((hours (/ (- seconds (mod seconds 3600)) 3600))
+         (minutes (ceiling (- seconds (* hours 3600)) 60)))
+    (if (or (> hours 0) force-hours)
+        (format "%d:%02d" hours minutes)
+      (format "%d" minutes))))
+
 
 ;;; Alerting and Nagging
 
