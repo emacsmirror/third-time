@@ -236,6 +236,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 
 ;;; Primary User Functions
 
+;;;###autoload
 (defun third-time-start-break ()
   "Start a break."
   (interactive)
@@ -245,6 +246,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (message "TODO")))
 
+;;;###autoload
 (defun third-time-start-long-break ()
   "Start a long break."
   (interactive)
@@ -254,6 +256,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (message "TODO")))
 
+;;;###autoload
 (defun third-time-start-work ()
   "Start working."
   (interactive)
@@ -262,11 +265,11 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (message "TODO")))
 
+;;;###autoload
 (defun third-time-end-session ()
   "End the work session."
   (interactive)
   (third-time-mode -1))
-
 
 
 ;;; Global Minor Mode
@@ -299,6 +302,7 @@ Note, must be set *before* third-time is loaded.")
     keymap)
   "Keymap for `third-time-mode'.")
 
+;;;###autoload
 (define-minor-mode third-time-mode
   "Basic support for Third Time productivity."
   :global t
