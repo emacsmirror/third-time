@@ -241,6 +241,8 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
   (interactive)
   (if (not (eq third-time-state :working))
       (user-error "You cannot take a break if you are not currently working")
+    (setf third-time-state :break)
+    (force-mode-line-update)
     (message "TODO")))
 
 (defun third-time-start-long-break ()
@@ -248,12 +250,17 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
   (interactive)
   (if (not (eq third-time-state :working))
       (user-error "You cannot take a long break if you are not currently working")
+    (setf third-time-state :long-break)
+    (force-mode-line-update)
     (message "TODO")))
 
 (defun third-time-start-work ()
   "Start working."
   (interactive)
-  (message "TODO"))
+  (unless (eq third-time-state :working)
+    (setf third-time-state :working)
+    (force-mode-line-update)
+    (message "TODO")))
 
 (defun third-time-end-session ()
   "End the work session."
