@@ -272,12 +272,8 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                                           (:break . "BREAK")
                                           (:long-break . "LONGBREAK")
                                           (nil . "OFF")))))
-        (hours-worked (format "%02d:%02d"
-                              (floor (/ worked 60 60))
-                              (floor (/ worked 60))))
-        (break-remaining (format "%02d:%02d"
-                                 (floor (/ remaining 60 60))
-                                 (floor (/ remaining 60)))))
+        (hours-worked (third-time-seconds-to-hh-mm worked t))
+        (break-remaining (third-time-seconds-to-hh-mm remaining t)))
     (format-spec third-time-log-format `((?T . ,time)
                                          (?s . ,state-string)
                                          (?h . ,hours-worked)
