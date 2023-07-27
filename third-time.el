@@ -168,7 +168,8 @@ This is stored as the result of `current-time'.")
         third-time-break-available 0
         third-time-change-time nil
         third-time-log-buffer nil)
-  (third-time-cancel-nagger))
+  (third-time-cancel-nagger)
+  (third-time-cancel-break-timer))
 
 (defun third-time-calculate-time-elapsed ()
   "Determine how much time has elapsed since `third-time-change-time'."
@@ -248,11 +249,16 @@ Time will be formatted as HH:MM if FORCE-HOURS is non-nil."
 
 
 ;;; Break timers
-(defun third-time-start-break-timer (secs message)
-  "Start a break timer for SECS, showing MESSAGE after break."
+
+(defun third-time-cancel-break-timer ()
+  "Cancel the current break timer."
   (when (timerp third-time-break-timer)
     (cancel-timer third-time-break-timer)
-    (setf third-time-break-timer nil))
+    (setf third-time-break-timer nil)))
+
+(defun third-time-start-break-timer (secs message)
+  "Start a break timer for SECS, showing MESSAGE after break."
+  (third-time-cancel-break-timer)
   (setf third-time-break-timer (run-with-timer secs nil #'third-time-break-function message)))
 
 (defun third-time-break-function (message)
@@ -297,14 +303,24 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 ;;; Primary User Functions
 
 ;;;###autoload
-(defun third-time-start-break ()
-  "Start a break."
-  (interactive)
+(defun third-time-start-break (&optional arg)
+  "Start a break, if ARG prompt for how long it should be."
+  (interactive "P")
   (if (not (eq third-time-state :working))
       (user-error "You cannot take a break if you are not currently working")
     (setf third-time-state :break)
     (force-mode-line-update)
-    (message "TODO")))
+    (cl-incf third-time-break-available (third-time-calculate-additional-break-time))
+    (cl-incf third-time-worked-total (third-time-calculate-time-elapsed))
+    (setf third-time-just-worked (third-time-calculate-time-elapsed))
+    (let ((break-length (if arg
+                            (third-time-read-hh-mm-time "Break for how long?"
+                                                        (third-time-seconds-to-hh-mm third-time-break-available))
+                          third-time-break-available)))
+      (setf third-time-change-time (current-time))
+      (run-hooks 'third-time-break-hook 'third-time-change-hook)
+      (third-time-start-break-timer break-length "Your break is complete.")
+      (third-time-alert "Enjoy your break."))))
 
 ;;;###autoload
 (defun third-time-start-long-break ()
@@ -314,16 +330,31 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
       (user-error "You cannot take a long break if you are not currently working")
     (setf third-time-state :long-break)
     (force-mode-line-update)
-    (message "TODO")))
+    (cl-incf third-time-break-available (third-time-calculate-additional-break-time))
+    (cl-incf third-time-worked-total (third-time-calculate-time-elapsed))
+    (setf third-time-just-worked (third-time-calculate-time-elapsed))
+    (let ((break-length (third-time-read-hh-mm-time "Break for how long?"
+                                                    (third-time-seconds-to-hh-mm third-time-break-available))))
+      (setf third-time-change-time (current-time)
+            third-time-break-available -1)
+      (run-hooks 'third-time-long-break-hook 'third-time-change-hook)
+      (third-time-start-break-timer break-length "Your long break is complete.")
+      (third-time-alert "Enjoy your long break."))))
 
 ;;;###autoload
 (defun third-time-start-work ()
   "Start working."
   (interactive)
   (unless (eq third-time-state :working)
-    (setf third-time-state :working)
+    (when (or (eq third-time-state :break)
+              (eq third-time-state :long-break))
+      (setf third-time-break-available (third-time-calculate-remaining-break-time))
+      (third-time-cancel-break-timer))
+    (setf third-time-state :working
+          third-time-change-time (current-time))
     (force-mode-line-update)
-    (message "TODO")))
+    (run-hooks 'third-time-work-hook 'third-time-change-hook)
+    (third-time-alert "Start your work.")))
 
 ;;;###autoload
 (defun third-time-end-session ()
