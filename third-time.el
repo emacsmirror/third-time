@@ -213,7 +213,8 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
         (insert (third-time-log-format-line third-time-state
                                             third-time-worked-total
                                             third-time-break-available)
-                "\n")))))
+                "\n")
+        (save-buffer)))))
 
 
 ;;; Primary User Functions
