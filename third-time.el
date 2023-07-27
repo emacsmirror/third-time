@@ -123,6 +123,8 @@ Formatted using `format-time-string'."
 
 (defvar third-time-change-time 0)
 
+(defvar third-time-log-buffer nil)
+
 
 ;;; Helper Functions
 
@@ -150,6 +152,18 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                                          (?h . ,hours-worked)
                                          (?b . ,break-remaining)))))
 
+(defun third-time-log ()
+  "Log the most recent state change."
+  (when third-time-log-file
+    (unless third-time-log-buffer
+      (setf third-time-log-buffer (find-file-literally third-time-log-file)))
+    (with-current-buffer third-time-log-buffer
+      (save-mark-and-excursion
+        (goto-char (point-max))
+        (insert (third-time-log-format-line third-time-state
+                                            third-time-worked-total
+                                            third-time-break-available)
+                "\n")))))
 
 
 ;;; Primary User Functions
