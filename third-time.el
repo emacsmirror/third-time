@@ -123,22 +123,31 @@ interpreted as a number of minutes."
 
 ;;; Variables
 
-;;;; State Transitions
-;; nil -> :working
-;; :working -> {:long-break, :break, nil }
-;; {:long-break, :break} -> { nil, :working }
+(defvar third-time-state nil
+  "Current third time state.
 
-(defvar third-time-state nil)
+This should be one of nil, :working, :break, or :long-break.
 
-(defvar third-time-worked-total 0)
+The following state transitions are assumed:
 
-(defvar third-time-just-worked 0)
+nil -> :working
+:working -> {:long-break, :break, nil }
+{:long-break, :break} -> { nil, :working }")
 
-(defvar third-time-break-available 0)
+(defvar third-time-worked-total 0
+  "Total time worked in the current session as a number of seconds.")
 
-(defvar third-time-change-time 0)
+(defvar third-time-just-worked 0
+  "Time worked in the most recent work session as number of seconds.")
 
-(defvar third-time-log-buffer nil)
+(defvar third-time-break-available 0
+  "How many seconds of break are available.")
+
+(defvar third-time-change-time 0
+  "When was the last state change recorded.")
+
+(defvar third-time-log-buffer nil
+  "Buffer to log state changes to.")
 
 (defvar third-time-nag-timer nil
   "Timer for nagging that a break is done.")
