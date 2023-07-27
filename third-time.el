@@ -502,12 +502,13 @@ When not called interactively, return the (propertized) summary instead."
 
 (defun third-time-modeline ()
   "Format modeline entry for `third-time-mode'."
-  (format " ⅓⏲[%s]"
-          (cdr (assoc third-time-state
-                      '((:working . "WRK")
-                        (:break . "BRK")
-                        (:long-break . "LNG")
-                        (nil . "OFF"))))))
+  (let ((elapsed-time (third-time-calculate-time-elapsed)))
+    (format " ⅓⏲[%s]"
+            (cdr (assoc third-time-state
+                        `((:working . ,(format "WRK %s" (third-time-seconds-to-hh-mm elapsed-time t)))
+                          (:break . ,(format "BRK %s" (third-time-seconds-to-hh-mm (- third-time-break-secs elapsed-time) t)))
+                          (:long-break . ,(format "LNG %s" (third-time-seconds-to-hh-mm (- third-time-break-secs elapsed-time) t)))
+                          (nil . "OFF")))))))
 
 (defvar third-time-prefix "C-x M-t"
   "Prefix for `third-time-mode' bindings.
