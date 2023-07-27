@@ -377,7 +377,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                         (:long-break . "LNG")
                         (nil . "OFF"))))))
 
-(defvar third-time-prefix "C-x C-S-t"
+(defvar third-time-prefix "C-x M-t"
   "Prefix for `third-time-mode' bindings.
 
 Note, must be set *before* third-time is loaded.")
@@ -408,7 +408,6 @@ Note, must be set *before* third-time is loaded.")
         (third-time-log)
         (third-time-reset-state))
     (third-time-start-work)))
-
 
 (provide 'third-time)
 
