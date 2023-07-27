@@ -115,7 +115,7 @@ Formatted using `format-time-string'."
 
 (defvar third-time-state nil)
 
-(defvar third-time-worked-time-total 0)
+(defvar third-time-worked-total 0)
 
 (defvar third-time-just-worked 0)
 
