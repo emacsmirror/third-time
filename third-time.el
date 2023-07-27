@@ -105,6 +105,21 @@ Formatted using `format-time-string'."
   :group 'third-time
   :type 'string)
 
+(defcustom third-time-alert-function #'third-time-alerter
+  "How should users be alerted of break ends?
+
+This should be a function which takes one argument, a MESSAGE."
+  :group 'third-time
+  :type 'function)
+
+(defcustom third-time-nag-time 3
+  "How often should the user be nagged?
+
+When 0 no nagging will be completed.  Otherwise, this number is
+interpreted as a number of minutes."
+  :group 'third-time
+  :type 'natnum)
+
 
 ;;; Variables
 
@@ -125,9 +140,44 @@ Formatted using `format-time-string'."
 
 (defvar third-time-log-buffer nil)
 
+(defvar third-time-nag-timer nil
+  "Timer for nagging that a break is done.")
+
 
 ;;; Helper Functions
 
+
+
+;;; Alerting and Nagging
+
+(defun third-time-alert (message)
+  "Show the user MESSAGE with `third-time-alert-function'."
+  (funcall third-time-alert-function message))
+
+(defun third-time-alerter (message)
+  "Show Third Time alert MESSAGE."
+  (message "%s\n%s"
+           (propertize "Third Time Alert" 'face 'font-lock-error-face)
+           message))
+
+(defun third-time-cancel-nagger ()
+  "Cancel the nag timer."
+  (when (timerp third-time-nag-timer)
+    (cancel-timer third-time-nag-timer)
+    (setf third-time-nag-timer nil)))
+
+(defun third-time-start-nagger ()
+  "Start nagging users that their break has finished."
+  (unless (= third-time-nag-time 0)
+    (third-time-cancel-nagger)
+    (setf third-time-nag-timer (run-with-timer (* 60 third-time-nag-time) t #'third-time-nag))))
+
+(defun third-time-nag ()
+  "Nag the user that their break is complete."
+  (if (or (eq third-time-state :break)
+          (eq third-time-state :long-break))
+      (third-time-alert "Your break has finished.  Time to return to work.")
+    (third-time-cancel-nagger)))
 
 
 ;;; Logging support
