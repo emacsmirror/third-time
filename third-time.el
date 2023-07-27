@@ -318,6 +318,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                                                         (third-time-seconds-to-hh-mm third-time-break-available))
                           third-time-break-available)))
       (setf third-time-change-time (current-time))
+      (third-time-log)
       (run-hooks 'third-time-break-hook 'third-time-change-hook)
       (third-time-start-break-timer break-length "Your break is complete.")
       (third-time-alert "Enjoy your break."))))
@@ -337,6 +338,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                                                     (third-time-seconds-to-hh-mm third-time-break-available))))
       (setf third-time-change-time (current-time)
             third-time-break-available -1)
+      (third-time-log)
       (run-hooks 'third-time-long-break-hook 'third-time-change-hook)
       (third-time-start-break-timer break-length "Your long break is complete.")
       (third-time-alert "Enjoy your long break."))))
@@ -353,6 +355,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (setf third-time-state :working
           third-time-change-time (current-time))
     (force-mode-line-update)
+    (third-time-log)
     (run-hooks 'third-time-work-hook 'third-time-change-hook)
     (third-time-alert "Start your work.")))
 
@@ -401,7 +404,9 @@ Note, must be set *before* third-time is loaded.")
   :keymap third-time-mode-map
   :variable third-time-state
   (if (not third-time-state)
-      (third-time-reset-state)
+      (progn
+        (third-time-log)
+        (third-time-reset-state))
     (third-time-start-work)))
 
 
