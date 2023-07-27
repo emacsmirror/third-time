@@ -146,8 +146,10 @@ nil -> :working
 (defvar third-time-break-available 0
   "How many seconds of break are available.")
 
-(defvar third-time-change-time 0
-  "When was the last state change recorded.")
+(defvar third-time-change-time nil
+  "When was the last state change recorded.
+
+This is stored as the result of `current-time'.")
 
 (defvar third-time-log-buffer nil
   "Buffer to log state changes to.")
@@ -164,6 +166,7 @@ nil -> :working
         third-time-worked-total 0
         third-time-just-worked 0
         third-time-break-available 0
+        third-time-change-time nil
         third-time-log-buffer nil)
   (third-time-cancel-nagger))
 
