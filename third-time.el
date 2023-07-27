@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <swflint@flintfam.org>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/busylight
-;; Version: 1.0.0
+;; Version: 1.1.0
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -210,8 +210,14 @@ nil -> :working
 (defvar third-time-worked-total 0
   "Total time worked in the current session as a number of seconds.")
 
-(defvar third-time-just-worked 0
-  "Time worked in the most recent work session as number of seconds.")
+(defvar third-time-work-sessions 0
+  "Number of sessions worked.")
+
+(defvar third-time-break-total 0
+  "Total time taken as a break.")
+
+(defvar third-time-break-sessions 0
+  "Number of break sessions.")
 
 (defvar third-time-break-timer nil
   "Timer for breaks.")
@@ -237,7 +243,9 @@ This is stored as the result of `current-time'.")
   "Reset Third Time state variables."
   (setf third-time-state nil
         third-time-worked-total 0
-        third-time-just-worked 0
+        third-time-work-sessions 0
+        third-time-break-total 0
+        third-time-break-sessions 0
         third-time-break-available 0
         third-time-change-time nil
         third-time-log-buffer nil)
@@ -385,7 +393,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (cl-incf third-time-break-available (third-time-calculate-additional-break-time))
     (cl-incf third-time-worked-total (third-time-calculate-time-elapsed))
-    (setf third-time-just-worked (third-time-calculate-time-elapsed))
+    (cl-incf third-time-work-sessions)
     (let ((break-length (if arg
                             (third-time-read-hh-mm-time "Break for how long?"
                                                         (third-time-seconds-to-hh-mm third-time-break-available))
@@ -406,7 +414,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (cl-incf third-time-break-available (third-time-calculate-additional-break-time))
     (cl-incf third-time-worked-total (third-time-calculate-time-elapsed))
-    (setf third-time-just-worked (third-time-calculate-time-elapsed))
+    (cl-incf third-time-work-sessions)
     (let ((break-length (third-time-read-hh-mm-time "Break for how long?"
                                                     (third-time-seconds-to-hh-mm third-time-break-available))))
       (setf third-time-change-time (current-time)
@@ -424,7 +432,9 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (when (or (eq third-time-state :break)
               (eq third-time-state :long-break))
       (setf third-time-break-available (third-time-calculate-remaining-break-time))
-      (third-time-cancel-break-timer))
+      (third-time-cancel-break-timer)
+      (cl-incf third-time-break-total (third-time-calculate-time-elapsed))
+      (cl-incf third-time-break-sessions))
     (setf third-time-state :working
           third-time-change-time (current-time))
     (force-mode-line-update)
