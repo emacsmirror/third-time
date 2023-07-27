@@ -155,6 +155,14 @@ nil -> :working
 
 ;;; Helper Functions
 
+(defun third-time-reset-state ()
+  "Reset Third Time state variables."
+  (setf third-time-state nil
+        third-time-worked-total 0
+        third-time-just-worked 0
+        third-time-break-available 0
+        third-time-log-buffer nil)
+  (third-time-cancel-nagger))
 
 
 ;;; Alerting and Nagging
@@ -228,6 +236,30 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 
 ;;; Primary User Functions
 
+(defun third-time-start-break ()
+  "Start a break."
+  (interactive)
+  (if (not (eq third-time-state :working))
+      (user-error "You cannot take a break if you are not currently working")
+    (message "TODO")))
+
+(defun third-time-start-long-break ()
+  "Start a long break."
+  (interactive)
+  (if (not (eq third-time-state :working))
+      (user-error "You cannot take a long break if you are not currently working")
+    (message "TODO")))
+
+(defun third-time-start-work ()
+  "Start working."
+  (interactive)
+  (message "TODO"))
+
+(defun third-time-end-session ()
+  "End the work session."
+  (interactive)
+  (third-time-mode -1))
+
 
 
 ;;; Global Minor Mode
@@ -240,7 +272,10 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
   :global t
   :lighter " ⅓⏲"
   :keymap third-time-mode-map
-  :variable third-time-state)
+  :variable third-time-state
+  (if (not third-time-state)
+      (third-time-reset-state)
+    (third-time-start-work)))
 
 
 (provide 'third-time)
