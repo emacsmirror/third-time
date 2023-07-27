@@ -172,6 +172,16 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 
 ;;; Global Minor Mode
 
+(defvar third-time-mode-map (make-keymap)
+  "Keymap for `third-time-mode'.")
+
+(define-minor-mode third-time-mode
+  "Basic support for Third Time productivity."
+  :global t
+  :lighter " ⅓⏲"
+  :keymap third-time-mode-map
+  :variable third-time-state)
+
 
 (provide 'third-time)
 
