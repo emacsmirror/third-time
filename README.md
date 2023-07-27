@@ -1,3 +1,6 @@
+<!-- [![MELPA](https://melpa.org/packages/time-block-badge.svg)](https://melpa.org/#/third-time) -->
+[![REUSE status](https://api.reuse.software/badge/git.sr.ht/~swflint/third-time)](https://api.reuse.software/info/git.sr.ht/~swflint/third-time)
+
 # Third Time
 
 [Third Time](https://www.lesswrong.com/posts/RWu8eZqbwgB9zaerh/third-time-a-better-way-to-work) support for Emacs.
