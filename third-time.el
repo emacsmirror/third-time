@@ -298,7 +298,7 @@ Time will be formatted as HH:MM if FORCE-HOURS is non-nil."
 (defun third-time-alerter (message)
   "Show Third Time alert MESSAGE."
   (message "%s\n%s"
-           (propertize "Third Time Alert" 'face 'font-lock-error-face)
+           (propertize "Third Time Alert" 'face 'font-lock-warning-face)
            message))
 
 (defun third-time-cancel-nagger ()
