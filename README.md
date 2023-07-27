@@ -30,6 +30,8 @@ If the prefix argument is passed, it will prompt for how long the break should b
 
 `third-time-end-session` (`C-x M-t e`, `C-x M-t s`) ends a Third Time session (i.e., workday).
 
+Finally, the command `third-time-summary` (`C-x M-t S`) describes the current status, including current time in state, and information about break times.
+
 ## Configuration
 
 The variable `third-time-prefix` defaults to `C-x M-t`, and is the prefix for the minor mode's bindings.

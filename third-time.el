@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <swflint@flintfam.org>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/busylight
-;; Version: 1.1.0
+;; Version: 1.2.0
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -56,6 +56,10 @@
 ;;
 ;; `third-time-end-session' (`C-x M-t e', `C-x M-t s') ends a Third
 ;; Time session (i.e., workday).
+;;
+;; Finally, the command `third-time-summary' (`C-x M-t S') describes
+;; the current status, including current time in state, and
+;; information about break times.
 ;;
 ;;;; Configuration
 ;;
@@ -219,6 +223,9 @@ nil -> :working
 (defvar third-time-break-sessions 0
   "Number of break sessions.")
 
+(defvar third-time-break-secs 0
+  "How long the break was set to last.")
+
 (defvar third-time-break-timer nil
   "Timer for breaks.")
 
@@ -247,6 +254,7 @@ This is stored as the result of `current-time'.")
         third-time-break-total 0
         third-time-break-sessions 0
         third-time-break-available 0
+        third-time-break-secs 0
         third-time-change-time nil
         third-time-log-buffer nil)
   (third-time-cancel-nagger)
@@ -384,6 +392,44 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
 ;;; Primary User Functions
 
 ;;;###autoload
+(defun third-time-summary ()
+  "Show a summary of Third Time status.
+
+When not called interactively, return the (propertized) summary instead."
+  (interactive)
+  (let* ((elapsed-time (third-time-calculate-time-elapsed))
+         (output-string (pcase third-time-state
+                          (:working
+                           (format "%s for %s.  Total work time %s (%d).  %s available break (%d)."
+                                   (propertize "Working" 'face 'bold)
+                                   (third-time-seconds-to-hh-mm elapsed-time t)
+                                   (third-time-seconds-to-hh-mm (+ third-time-worked-total elapsed-time) t)
+                                   (1+ third-time-work-sessions)
+                                   (third-time-seconds-to-hh-mm (+ third-time-break-available
+                                                                   (third-time-calculate-additional-break-time))
+                                                                t)
+                                   third-time-break-sessions))
+                          (:break (format "%s for %s (for the next %s).  %s break remaining (%d taken).  Total work time %s (%d)."
+                                          (propertize "On Break" 'face 'bold)
+                                          (third-time-seconds-to-hh-mm elapsed-time t)
+                                          (third-time-seconds-to-hh-mm (- third-time-break-secs elapsed-time) t)
+                                          (third-time-seconds-to-hh-mm (- third-time-break-available elapsed-time) t)
+                                          (1+ third-time-break-sessions)
+                                          (third-time-seconds-to-hh-mm third-time-worked-total t)
+                                          third-time-work-sessions))
+                          (:long-break (format "%s for %s (for the next %s).  0:00 break remaining (%d taken).  Total work time %s (%d)."
+                                               (propertize "On Long Break" 'face 'bold)
+                                               (third-time-seconds-to-hh-mm elapsed-time t)
+                                               (third-time-seconds-to-hh-mm (- third-time-break-secs elapsed-time) t)
+                                               (1+ third-time-break-sessions)
+                                               (third-time-seconds-to-hh-mm third-time-worked-total t)
+                                               third-time-work-sessions))
+                          (_ (propertize "Not in session." 'face 'bold)))))
+    (if (called-interactively-p 'interactive)
+        (message output-string)
+      output-string)))
+
+;;;###autoload
 (defun third-time-start-break (&optional arg)
   "Start a break, if ARG prompt for how long it should be."
   (interactive "P")
@@ -398,11 +444,12 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
                             (third-time-read-hh-mm-time "Break for how long?"
                                                         (third-time-seconds-to-hh-mm third-time-break-available))
                           third-time-break-available)))
-      (setf third-time-change-time (current-time))
+      (setf third-time-change-time (current-time)
+            third-time-break-secs break-length)
       (third-time-log)
       (run-hooks 'third-time-break-hook 'third-time-change-hook)
       (third-time-start-break-timer break-length "Your break is complete.")
-      (third-time-alert "Enjoy your break."))))
+      (message (third-time-summary)))))
 
 ;;;###autoload
 (defun third-time-start-long-break ()
@@ -418,11 +465,12 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (let ((break-length (third-time-read-hh-mm-time "Break for how long?"
                                                     (third-time-seconds-to-hh-mm third-time-break-available))))
       (setf third-time-change-time (current-time)
-            third-time-break-available -1)
+            third-time-break-available -1
+            third-time-break-secs break-length)
       (third-time-log)
       (run-hooks 'third-time-long-break-hook 'third-time-change-hook)
       (third-time-start-break-timer break-length "Your long break is complete.")
-      (third-time-alert "Enjoy your long break."))))
+      (message (third-time-summary)))))
 
 ;;;###autoload
 (defun third-time-start-work ()
@@ -431,7 +479,8 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
   (unless (eq third-time-state :working)
     (when (or (eq third-time-state :break)
               (eq third-time-state :long-break))
-      (setf third-time-break-available (third-time-calculate-remaining-break-time))
+      (setf third-time-break-available (third-time-calculate-remaining-break-time)
+            third-time-break-secs 0)
       (third-time-cancel-break-timer)
       (cl-incf third-time-break-total (third-time-calculate-time-elapsed))
       (cl-incf third-time-break-sessions))
@@ -440,7 +489,7 @@ This uses `third-time-log-format' and `third-time-log-time-format'."
     (force-mode-line-update)
     (third-time-log)
     (run-hooks 'third-time-work-hook 'third-time-change-hook)
-    (third-time-alert "Start your work.")))
+    (message (third-time-summary))))
 
 ;;;###autoload
 (defun third-time-end-session ()
@@ -475,7 +524,8 @@ Note, must be set *before* third-time is loaded.")
             ("l" . third-time-start-long-break)
             ("m" . third-time-start-long-break)
             ("e" . third-time-end-session)
-            ("s" . third-time-end-session)))
+            ("s" . third-time-end-session)
+            ("S" . third-time-summary)))
     keymap)
   "Keymap for `third-time-mode'.")
 
