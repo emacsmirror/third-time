@@ -98,7 +98,7 @@ The following format codes are available:
   :group 'third-time
   :type 'string)
 
-(defcustom third-time-log-time-format ""
+(defcustom third-time-log-time-format "%Y,%m,%d,%H,%M"
   "Logging time format.
 
 Formatted using `format-time-string'."
@@ -129,6 +129,26 @@ Formatted using `format-time-string'."
 
 
 ;;; Logging support
+
+(defun third-time-log-format-line (state worked remaining)
+  "Format a log time according to STATE, WORKED and REMAINING.
+
+This uses `third-time-log-format' and `third-time-log-time-format'."
+  (let ((time (format-time-string third-time-log-time-format))
+        (state-string (cdr (assoc state '((:working . "WORKING")
+                                          (:break . "BREAK")
+                                          (:long-break . "LONGBREAK")
+                                          (nil . "OFF")))))
+        (hours-worked (format "%02d:%02d"
+                              (floor (/ worked 60 60))
+                              (floor (/ worked 60))))
+        (break-remaining (format "%02d:%02d"
+                                 (floor (/ remaining 60 60))
+                                 (floor (/ remaining 60)))))
+    (format-spec third-time-log-format `((?T . ,time)
+                                         (?s . ,state-string)
+                                         (?h . ,hours-worked)
+                                         (?b . ,break-remaining)))))
 
 
 
