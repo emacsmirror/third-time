@@ -498,6 +498,11 @@ When not called interactively, return the (propertized) summary instead."
   (third-time-mode -1))
 
 
+;;; Transient-based Interface
+
+;; TODO
+
+
 ;;; Global Minor Mode
 
 (defun third-time-modeline ()
