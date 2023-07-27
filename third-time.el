@@ -185,6 +185,25 @@ This is stored as the result of `current-time'.")
   (let ((work-time-elapsed (third-time-calculate-time-elapsed)))
     (round work-time-elapsed third-time-fraction)))
 
+(defun third-time-read-hh-mm-time (prompt &optional initial-input)
+  "PROMPT for a time in [HH:]MM format and convert to seconds.
+
+If INITIAL-INPUT is passed, it will be used."
+  (let* ((prompt-string (format "%s ([HH:]mm): " prompt))
+         (read-in-string (read-string prompt-string initial-input))
+         (hours 0)
+         (minutes 0))
+    (save-match-data
+      (while (not (string-match (rx bol
+                                    (or (and (group-n 1 (+ digit)) ":" (group-n 2 digit digit))
+                                        (group-n 2 (+ digit)))
+                                    eol)
+                                read-in-string))
+        (setf read-in-string (read-string prompt-string read-in-string)))
+      (setf hours (string-to-number (or (match-string 1 read-in-string) "0"))
+            minutes (string-to-number (match-string 2 read-in-string))))
+    (+ (* hours 60 60) (* minutes 60))))
+
 
 ;;; Alerting and Nagging
 
