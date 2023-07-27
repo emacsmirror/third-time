@@ -106,6 +106,24 @@ Formatted using `format-time-string'."
   :type 'string)
 
 
+;;; Variables
+
+;;;; State Transitions
+;; nil -> :working
+;; :working -> {:long-break, :break, nil }
+;; {:long-break, :break} -> { nil, :working }
+
+(defvar third-time-state nil)
+
+(defvar third-time-worked-time-total 0)
+
+(defvar third-time-just-worked 0)
+
+(defvar third-time-break-available 0)
+
+(defvar third-time-change-time 0)
+
+
 ;;; Helper Functions
 
 
