@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Third Time for Emacs
+Upstream-Contact: Samuel W. Flint <swflint@flintfam.org>
+Source: https://git.sr.ht/~swflint/third-time
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
