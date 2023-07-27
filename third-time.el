@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/busylight
 ;; Version: 0.0.1
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
