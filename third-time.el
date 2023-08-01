@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <swflint@flintfam.org>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/busylight
-;; Version: 1.2.0
+;; Version: 1.2.1
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -488,7 +488,7 @@ When not called interactively, return the (propertized) summary instead."
           third-time-change-time (current-time))
     (force-mode-line-update)
     (third-time-log)
-    (run-hooks 'third-time-work-hook 'third-time-change-hook)
+    (run-hooks 'third-time-working-hook 'third-time-change-hook)
     (message (third-time-summary))))
 
 ;;;###autoload
