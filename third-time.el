@@ -1,4 +1,4 @@
-;;; third-time.el --- Third Time support for Emacs -*- lexical-binding: t -*-
+;;; third-time.el --- Third Time: A Better Way to Work -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Samuel W. Flint <swflint@flintfam.org>
 
