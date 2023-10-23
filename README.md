@@ -66,6 +66,10 @@ Other information can be `third-time-state` for more advanced formatting.
 Additionally, there's a "nag" timer which can be used to periodically remind the user that a break has been completed.
 It is controlled with the `third-time-nag-time` which is a number of minutes, if it is 0, no nagging will take place.
 
+##  External Package Integration: Universal Sidecar
+
+Users of the [Universal Sidecar package](https://git.sr.ht/~swflint/emacs-universal-sidecar) can add `third-time-section` to `universal-sidecar-sections` to see a summary of the current third-time status in the sidecar.
+
 ## Bug Reports and Patches
 
 If you find a bug or wish to submit a patch, send an email to `~swflint/public-inbox@lists.sr.ht`.

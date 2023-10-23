@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <swflint@flintfam.org>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/busylight
-;; Version: 1.2.1
+;; Version: 1.3.0
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -95,11 +95,18 @@
 ;; which should be a function which takes one argument, a message to
 ;; alert the user with.  Other information can be `third-time-state'
 ;; for more advanced formatting.
-
+;;
 ;; Additionally, there's a "nag" timer which can be used to
 ;; periodically remind the user that a break has been completed.  It
 ;; is controlled with the `third-time-nag-time' which is a number of
 ;; minutes, if it is 0, no nagging will take place.
+;;
+;;;; External Package Integration: Universal Sidecar
+;;
+;; Users of the Universal Sidecar package
+;; (https://git.sr.ht/~swflint/emacs-universal-sidecar) can add
+;; `third-time-section' to `universal-sidecar-sections' to see a
+;; summary of the current third-time status in the sidecar.
 ;;
 ;;;; Bug Reports and Patches
 ;;
@@ -496,6 +503,16 @@ When not called interactively, return the (propertized) summary instead."
   "End the work session."
   (interactive)
   (third-time-mode -1))
+
+
+;;; Integrate with universal-sidecar
+(with-eval-after-load 'universal-sidecar
+  (universal-sidecar-define-section third-time-section () ()
+    "A basic section to show `third-time-mode' status."
+    (when third-time-state
+      (universal-sidecar-insert-section third-time-section "Third Time"
+        (with-current-buffer sidecar
+          (insert (third-time-summary)))))))
 
 
 ;;; Transient-based Interface
