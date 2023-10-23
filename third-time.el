@@ -4,7 +4,7 @@
 
 ;; Author: Samuel W. Flint <swflint@flintfam.org>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
-;; URL: https://git.sr.ht/~swflint/busylight
+;; URL: https://git.sr.ht/~swflint/third-time
 ;; Version: 1.3.0
 ;; Package-Requires: ((emacs "27.1"))
 
