@@ -72,5 +72,5 @@ Users of the [Universal Sidecar package](https://git.sr.ht/~swflint/emacs-univer
 
 ## Bug Reports and Patches
 
-If you find a bug or wish to submit a patch, send an email to `~swflint/public-inbox@lists.sr.ht`.
+If you find a bug or wish to submit a patch, send an email to `~swflint/emacs-utilities@lists.sr.ht`.
 
